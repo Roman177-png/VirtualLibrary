@@ -49,7 +49,7 @@ class ReviewController extends Controller
     {
         $query = Review::where('book_id', $bookId);
 
-        if (request()->has('rating')) {
+        if (request()->has('rating') && request('rating') !== '0') {
             $query->where('rating', request('rating'));
         }
 
@@ -59,5 +59,6 @@ class ReviewController extends Controller
 
         return response()->json($reviews);
     }
+
 
 }
