@@ -18,3 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::apiResource('books', \App\Http\Controllers\BookController::class);
+Route::resource('books.reviews', \App\Http\Controllers\ReviewController::class)->except(['show']);
