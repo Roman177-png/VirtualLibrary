@@ -14,12 +14,27 @@ class BookController extends Controller
      */
     public function index(): JsonResponse
     {
-        $books = Book::query()
-            ->orderBy(request('sort', 'title'), request('order', 'asc'))
-            ->get();
+        $query = Book::query();
+
+        if (request()->has('author')) {
+            $query->where('author', 'like', '%' . request('author') . '%');
+        }
+
+        if (request()->has('year')) {
+            $query->where('year', request('year'));
+        }
+
+        if (request()->has('title')) {
+            $query->where('title', 'like', '%' . request('title') . '%');
+        }
+
+        $query->orderBy(request('sort', 'title'), request('order', 'asc'));
+
+        $books = $query->get();
 
         return response()->json($books);
     }
+
 
     /**
      * Store a newly created resource in storage.

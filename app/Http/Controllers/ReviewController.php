@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\Book;
 use App\Http\Requests\ReviewRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -44,9 +45,20 @@ class ReviewController extends Controller
         return response()->json(null, 204);
     }
 
-    public function index($bookId)
+    public function index($bookId): JsonResponse
     {
-        $reviews = Review::where('book_id', $bookId)->get();
+        $query = Review::where('book_id', $bookId);
+
+        if (request()->has('rating') && request('rating') !== '0') {
+            $query->where('rating', request('rating'));
+        }
+
+        $query->orderBy(request('sort', 'created_at'), request('order', 'desc'));
+
+        $reviews = $query->get();
+
         return response()->json($reviews);
     }
+
+
 }
