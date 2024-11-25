@@ -50,4 +50,14 @@ class BookController extends Controller
 
         return response()->json(null, 204);
     }
+    public function show($id)
+    {
+        $book = Book::find($id);
+
+        if (!$book) {
+            return response()->json(['message' => 'Book not found'], 404);
+        }
+
+        return response()->json($book);
+    }
 }
