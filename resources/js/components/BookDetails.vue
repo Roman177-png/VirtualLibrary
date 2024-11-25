@@ -12,7 +12,6 @@
             <p class="text-gray-700 text-lg mb-6">{{ book.description }}</p>
 
             <div class="mt-8">
-                <h3 class="text-2xl font-semibold text-blue-700 mb-4">Reviews</h3>
 
                 <ReviewList :bookId="book.id" @edit-review="openEditReviewForm" />
 
@@ -20,8 +19,8 @@
                     <button
                         @click="openAddReviewForm"
                         class="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 focus:outline-none transition duration-300">
-                        <span class="material-icons mr-2">add</span>
-                        Add Review
+                        <span class="material-icons mr-2">Add Review</span>
+
                     </button>
                 </div>
             </div>
@@ -83,6 +82,14 @@ export default {
                 this.loading = false;
             }
         },
+        async fetchReviews() {
+            try {
+                const response = await axios.get(`/api/books/${this.book.id}/reviews`);
+                this.book.reviews = response.data; // Aktualizuj recenzje w obiekcie książki
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+            }
+        },
 
         openAddReviewForm() {
             this.selectedReview = null;
@@ -106,6 +113,7 @@ export default {
             axios.post(`/api/books/${this.book.id}/reviews`, reviewData)
                 .then(response => {
                     this.book.reviews.push(response.data);
+                    this.fetchReviews();
                     this.closeReviewForm();
                 })
                 .catch(error => {
@@ -120,6 +128,7 @@ export default {
                     if (index !== -1) {
                         this.book.reviews[index] = response.data;
                     }
+                    this.fetchReviews();
                     this.closeReviewForm();
                 })
                 .catch(error => {

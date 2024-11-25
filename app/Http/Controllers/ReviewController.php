@@ -22,23 +22,23 @@ class ReviewController extends Controller
         return response()->json($review, 201);
     }
 
-    public function update(ReviewRequest $request, $id)
+    public function update(ReviewRequest $request, $bookId, $reviewId)
     {
-        $review = Review::findOrFail($id);
-        $validated = $request->validated();
+        $book = Book::findOrFail($bookId);
 
-        $review->update([
-            'name' => $validated['name'],
-            'rating' => $validated['rating'],
-            'content' => $validated['content'],
-        ]);
+        $review = $book->reviews()->findOrFail($reviewId);
+
+        $review->update($request->validated());
 
         return response()->json($review, 200);
     }
 
-    public function destroy($id)
+    public function destroy($bookId, $reviewId)
     {
-        $review = Review::findOrFail($id);
+        $book = Book::findOrFail($bookId);
+
+        $review = $book->reviews()->findOrFail($reviewId);
+
         $review->delete();
 
         return response()->json(null, 204);

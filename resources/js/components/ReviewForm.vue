@@ -95,6 +95,7 @@ export default {
             } else {
                 this.$emit('add-review', this.form);
             }
+            this.closeForm();
         }
     },
     watch: {
